@@ -21,10 +21,14 @@ We are currently in **Phase 1: The Local Sandbox**.
 ### In Progress / Next Steps
 //todo
 ## 🧩 Technical Note:
-To ensure the engine runs natively in the browser, we are porting the `quarkdown-core` JVM compiler to KMP.
-Since WASM and the JVM don't love each-other and have different runtime constraints, we use **Kotlin Interfaces** in `commonMain` to abstract away unsupported features.
-This allows us to maintain a shared codebase while ensuring the browser-side "lobotomized" engine remains performant and ready for accurate HTML/PDF final rendering. 
+WASM and the JVM don't exactly love one another.
+Because of this, many features available in the original QD (qwardwon) code simply aren't supported in the WebAssembly port
 
+To maintain a full, functional port, I’ve had to make some compromises
+  * **"Lobotomized" Classes:** Many classes in the WASM version are stripped-down versions of their JVM counterparts and might behave slightly differently than what standard QD does.
+  *  **Interface Abstraction:** This is achieved using Kotlin interfaces in `commonMain`.
+
+What this approach achieves is a mostly seamless experience while editing and ensuring at the same time that the server HTML/PDF renders are accurate
 ### Feature Parity & Limitations
 | Feature                    | Browser/WASM Behavior | Server-Side Implementation | developer comment                                                                                               |
 |:---------------------------|:----------------------|:---------------------------|:----------------------------------------------------------------------------------------------------------------|
