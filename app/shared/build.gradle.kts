@@ -15,8 +15,8 @@ kotlin {
     wasmJs {
         browser()
     }
-    
-    
+
+
     sourceSets {
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -27,6 +27,7 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation("io.ktor:ktor-http:3.0.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

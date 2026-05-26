@@ -1,10 +1,11 @@
 package org.example.project.qdcore.util
 
+//TODO check for dead code
+
 /**
  * @param prefix prefix to remove
  * @param ignoreCase whether to ignore case when searching for the prefix
  * @return a pair of this string without [prefix] and a boolean value indicating whether the prefix was removed.
- *         If the prefix is not present, the string is returned as is and the boolean value is `false`
  */
 fun String.removeOptionalPrefix(
     prefix: String,
@@ -18,10 +19,9 @@ fun String.removeOptionalPrefix(
 
 /**
  * @return a sliced copy of this string from start to the last occurrence of [string] if it exists,
- *         this string otherwise
+ * this string otherwise
  */
 fun String.takeUntilLastOccurrence(string: String): String {
-    // Trim trailing #s preceded by a space
     val trailingIndex = lastIndexOf(string)
     return if (trailingIndex >= 0) {
         substring(0, trailingIndex)
@@ -32,9 +32,6 @@ fun String.takeUntilLastOccurrence(string: String): String {
 
 /**
  * @return a substring of [this] string from [startIndex] to [endIndex] if the indices are within bounds.
- * If [startIndex] is less than 0, the actual start index is 0.
- * If [endIndex] is greater than the length of the string or less than the start index,
- * the actual end index is the length of the string.
  */
 fun CharSequence.substringWithinBounds(
     startIndex: Int,
@@ -51,8 +48,6 @@ fun String.trimDelimiters(): String = if (length >= 2) substring(1, length - 1) 
 
 /**
  * Indents each line of [this] string by [indent].
- * @param indent indentation string
- * @return [this] string, indented
  */
 fun CharSequence.indent(indent: String) =
     buildString {
@@ -65,7 +60,6 @@ fun CharSequence.indent(indent: String) =
 /**
  * @param count number of lines to take
  * @param addOmittedLinesSuffix whether to add a suffix indicating how many lines were omitted
- * @return the first [count] lines of [this] string, plus an optional `... (N more lines)` suffix
  */
 fun CharSequence.takeLines(
     count: Int,
@@ -88,40 +82,30 @@ fun CharSequence.takeLines(
 
 /**
  * An optimized way to replace all occurrences of [oldValue] with [newValue] in a [StringBuilder].
- * @return this builder
+ * (Rewritten to be KMP-safe without java.lang.StringBuilder)
  */
 fun StringBuilder.replace(
     oldValue: String,
     newValue: String,
-) = apply {
-    var startIndex = indexOf(oldValue)
-    while (startIndex >= 0) {
-        replace(startIndex, startIndex + oldValue.length, newValue)
-        startIndex = indexOf(oldValue, startIndex + newValue.length)
-    }
+) = apply { // todo check this
+    val result = this.toString().replace(oldValue, newValue)
+    this.clear()
+    this.append(result)
 }
-
 /**
- * @return [this] string with all non-alphanumeric characters,
- *         except for `-`, `_`, `@`, replaced with [replacement].
- *         `.` is sanitized only at the beginning and the end of the string.
- * @param replacement character to replace invalid characters with
+ * @return [this] string with all non-alphanumeric characters replaced with [replacement].
  */
 fun String.sanitizeFileName(replacement: String) = this.replace("^\\.|\\.$|[^a-zA-Z0-9\\-_.@]+".toRegex(), replacement)
 
 /**
- * @return [this] string with line separators replaced with `\n`,
- *         or the string itself if `\n` is already the line separator
+ * @return [this] string with line separators replaced with `\n`
+ * (Rewritten to avoid java.lang.System)
  */
 fun CharSequence.normalizeLineSeparators(): CharSequence =
-    when (val separator = System.lineSeparator()) {
-        "\n" -> this
-        else -> this.toString().replace(separator, "\n")
-    }
+    this.toString().replace("\r\n", "\n").replace("\r", "\n")
 
 /**
  * Discards blank entries and trims each remaining entry.
- * @return a list of non-blank, trimmed strings
  */
 fun List<String>.trimEntries(): List<String> =
     filter { it.isNotBlank() }

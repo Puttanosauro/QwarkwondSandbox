@@ -1,8 +1,7 @@
 package org.example.project.qdcore.util
 
-import java.net.MalformedURLException
-import java.net.URL
-
+import io.ktor.http.Url
+import io.ktor.http.URLParserException
 private const val ANCHOR_DELIMITER = '#'
 
 /**
@@ -18,10 +17,10 @@ fun String.stripAnchor(): Pair<String, String>? =
 /**
  * @return a URL from [this] string if it's a valid URL, or `null` otherwise
  */
-fun String.toURLOrNull(): URL? =
+fun String.toURLOrNull(): Url? =
     try {
-        URL(this)
-    } catch (_: MalformedURLException) {
+        Url(this)
+    } catch (_: URLParserException) {
         null
     }
 

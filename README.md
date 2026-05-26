@@ -93,7 +93,8 @@ What this approach achieves is a mostly seamless experience while editing and en
 | **Multi-thread Rendering** | Stripped/Disabled     | still missing              | in a web page this is mostly useless and the difference is barely notable                                                                                 |
 | **CSL Citation Rendering** | Placeholder/Stubbed   | working                    | the numbering and citation wont fully work as intended, tho the placeholder are designed to be atleast readable                                           |
 | **IO Utilities**           | mostly working        | working                    | the structure has been rewritten in Kotlin to avoid JVM-hell, it should do for 99.9% of client use cases                                                  |
-| **CSEscape Html**          | Adapted               | working                    | the funcion relies on `org.apache.commons.text.StringEscapeUtils` because of this a full rewrite is near-impossible, but this should work well-ish enough |
+| **Escape Html**            | Adapted               | working                    | the funcion relies on `org.apache.commons.text.StringEscapeUtils` because of this a full rewrite is near-impossible, but this should work well-ish enough |
+| **URL resolve tools**      | Adapted               | working                    | the funcion relies on `java.net` because of this a clientside restructure was needed                                                                      |
 
 > **Note:** *We use abstraction via `commonMain` interfaces to ensure that features which cannot run in the browser can still be fully implemented on the server-side compiler for accurate final PDF/HTML rendering*
 
