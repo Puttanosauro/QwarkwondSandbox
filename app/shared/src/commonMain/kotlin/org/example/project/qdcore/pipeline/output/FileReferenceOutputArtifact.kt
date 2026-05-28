@@ -1,6 +1,6 @@
 package org.example.project.qdcore.pipeline.output
 
-import java.io.File
+import qwarkdownsandbox.app.shared.generated.resources.Res
 
 /**
  * An [OutputResource] backed by a file on the filesystem.
@@ -12,7 +12,7 @@ import java.io.File
  */
 data class FileReferenceOutputArtifact(
     override val name: String,
-    val file: File,
+    val sourcePath: String,
     val useChecksumInvalidation: Boolean = false,
 ) : OutputResource {
     override fun <T> accept(visitor: OutputResourceVisitor<T>): T = visitor.visit(this)

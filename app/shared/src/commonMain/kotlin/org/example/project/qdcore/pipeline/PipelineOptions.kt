@@ -6,7 +6,6 @@ import org.example.project.qdcore.media.storage.options.ReadOnlyMediaStorageOpti
 import org.example.project.qdcore.permissions.Permission
 import org.example.project.qdcore.pipeline.error.BasePipelineErrorHandler
 import org.example.project.qdcore.pipeline.error.PipelineErrorHandler
-import java.io.File
 
 /**
  * Read-only settings that affect different behaviors of a [Pipeline].
@@ -35,7 +34,7 @@ data class PipelineOptions(
     val resourceName: String? = null,
     val prettyOutput: Boolean = false,
     val wrapOutput: Boolean = true,
-    val workingDirectory: File? = null,
+    val workingDirectory: String? = null,
     val enableMediaStorage: Boolean = true,
     val subdocumentNaming: SubdocumentOutputNaming = SubdocumentOutputNaming.FILE_NAME,
     val isPreview: Boolean = false,

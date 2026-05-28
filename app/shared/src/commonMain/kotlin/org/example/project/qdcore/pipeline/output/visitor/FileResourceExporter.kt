@@ -13,17 +13,22 @@ import org.example.project.qdcore.pipeline.output.visitor.FileResourceExporter.N
 import org.example.project.qdcore.pipeline.output.visitor.FileResourceExporter.NameProvider.fullFileName
 import org.example.project.qdcore.util.IOUtils
 import org.example.project.qdcore.util.sanitizeFileName
-import java.io.File
+import org.example.project.qdcore.context.file.FileSystem
 
 /**
  * A visitor that saves each type of [OutputResource] to a file and returns it.
  * @param location directory to save the resources to
  * @param write whether to actually write to the file system (if `false`, the visitor only returns the corresponding file paths without creating them)
  */
+
+/*
+* !! the modification of this class has been pretty precarious as of right now: if something breaks exporting file, ill bet is this thing
+*/
 class FileResourceExporter(
-    private val location: File,
+    private val location: String,
+    private val fileSystem: FileSystem,
     private val write: Boolean = true,
-) : OutputResourceVisitor<File> {
+) : OutputResourceVisitor<String> {
     /**
      * Mapping of [OutputResource]s to their file names.
      */
@@ -67,21 +72,32 @@ class FileResourceExporter(
      * Saves an [OutputArtifact] to a file with text content.
      * @return the file itself
      */
-    override fun visit(artifact: TextOutputArtifact) =
-        File(location, artifact.fullFileName).also {
-            if (write) {
-                it.parentFile?.mkdirs()
-                it.writeText(artifact.content.toString())
-            }
+    override fun visit(artifact: TextOutputArtifact): String {
+        // the if statements is just to ensure the file path is not something like: folder1/foler2//folder3/file.exention
+        val targetPath = if (location.endsWith("/")) {
+            "$location${artifact.fullFileName}"
+        }else {
+            "$location/${artifact.fullFileName}"
+        }
+        if (write) {
+            fileSystem.writeText(targetPath, artifact.content.toString())
         }
 
-    override fun visit(artifact: BinaryOutputArtifact) =
-        File(location, artifact.fullFileName).also {
-            if (write) {
-                it.parentFile?.mkdirs()
-                it.writeBytes(artifact.content.toByteArray())
-            }
+        return targetPath
+    }
+
+    override fun visit(artifact: BinaryOutputArtifact): String {
+        val targetPath = if (location.endsWith("/")) {
+            "$location${artifact.fullFileName}"
+        } else {
+            "$location/${artifact.fullFileName}"
         }
+        if (write) {
+            fileSystem.writeBytes(targetPath, artifact.content.toByteArray())
+        }
+
+        return targetPath
+    }
 
     /**
      * Copies a [FileReferenceOutputArtifact] to the output location.

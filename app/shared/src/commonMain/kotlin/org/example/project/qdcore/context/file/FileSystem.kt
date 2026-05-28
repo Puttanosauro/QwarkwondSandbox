@@ -55,6 +55,14 @@ interface FileSystem {
      *         or `null` if either working directory is `null`
      */
     fun relativePathTo(other: FileSystem): Path?
+
+    fun writeText(path: String, content: String) {
+        // TODO: do this
+    }
+
+    fun writeBytes(path: String, bytes: ByteArray) {
+        //TODO: do this
+    }
 }
 
 /**

@@ -44,6 +44,7 @@ Until then, feel free to look at the code, but don't expect it to compile!
 * **The Core:** Leverages the [Quarkdown](https://github.com/iamgio/quarkdown) ecosystem, ported to Kotlin Multiplatform (KMP/WASM) to enable high-performance client-side rendering.
 * **Frontend:** A dual-mode interface offering real-time visual rendering alongside raw `.qd` source control.
 * **Backend:** Kotlin (Ktor) acting as a lightweight sync-router, document validator, and state manager.
+* **Virtual File System (VFS):** To survive in a browser without a hard drive, the KMP core uses a purely `String`-based virtual addressing system. The core pipeline calculates relative paths entirely in memory, delegating actual physical I/O (like reading a hard drive or fetching an image URL) to the native platform edges (`jvmMain` or `wasmMain`).
 * **Sync & Persistence:** CRDT-based synchronization for real-time collaboration, paired with a hybrid storage model (Redis for session caching, append-only logs for history, and SQL for final snapshots).
 
 ## 🛠 Development Roadmap
@@ -75,7 +76,6 @@ To finish phase 1 we need to:
   * [property](app/shared/src/commonMain/kotlin/org/example/project/qdcore/property)
   * [rendering](app/shared/src/commonMain/kotlin/org/example/project/qdcore/rendering)
   * [template](app/shared/src/commonMain/kotlin/org/example/project/qdcore/template)
-  * [util](app/shared/src/commonMain/kotlin/org/example/project/qdcore/util)
   * [visitor](app/shared/src/commonMain/kotlin/org/example/project/qdcore/visitor)
   
 ## 🧩 Technical Note:
@@ -88,13 +88,12 @@ To maintain a full, functional port, I’ve had to make some compromises
 
 What this approach achieves is a mostly seamless experience while editing and ensuring at the same time that the server HTML/PDF renders are accurate
 ### Feature Parity & Limitations
-| Feature                    | Browser/WASM Behavior | Server-Side Implementation | developer comment                                                                                                                                         |
-|:---------------------------|:----------------------|:---------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Multi-thread Rendering** | Stripped/Disabled     | still missing              | in a web page this is mostly useless and the difference is barely notable                                                                                 |
-| **CSL Citation Rendering** | Placeholder/Stubbed   | working                    | the numbering and citation wont fully work as intended, tho the placeholder are designed to be atleast readable                                           |
-| **IO Utilities**           | mostly working        | working                    | the structure has been rewritten in Kotlin to avoid JVM-hell, it should do for 99.9% of client use cases                                                  |
-| **Escape Html**            | Adapted               | working                    | the funcion relies on `org.apache.commons.text.StringEscapeUtils` because of this a full rewrite is near-impossible, but this should work well-ish enough |
-| **URL resolve tools**      | Adapted               | working                    | the funcion relies on `java.net` because of this a clientside restructure was needed                                                                      |
+| Feature                    | Browser/WASM Behavior                   | Server-Side Implementation | developer comment                                                                                                                                                                                                         |
+|:---------------------------|:----------------------------------------|:---------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Multi-thread Rendering** | Stripped/Disabled                       | still missing              | in a web page this is mostly useless and the difference is barely notable                                                                                                                                                 |
+| **CSL Citation Rendering** | Placeholder/Stubbed                     | working                    | the numbering and citation wont fully work as intended, tho the placeholder are designed to be atleast readable                                                                                                           |
+| **IO Utilities**           | Virtual String-Math & Network Requests  | working                    | The core relies on a pure String interface. The client resolves paths purely in RAM (letting the browser fetch image blobs via HTTP), while the server converts those strings back to File objects for full OS-level I/O  |
+| **Escape Html**            | Adapted                                 | working                    | the funcion relies on `org.apache.commons.text.StringEscapeUtils` because of this a full rewrite is near-impossible, but this should work well-ish enough                                                                 |
 
 > **Note:** *We use abstraction via `commonMain` interfaces to ensure that features which cannot run in the browser can still be fully implemented on the server-side compiler for accurate final PDF/HTML rendering*
 

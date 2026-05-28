@@ -1,7 +1,5 @@
 package org.example.project.qdcore.pipeline.output
 
-import java.io.File
-
 /**
  * Represents an [OutputResource] that contains binary data.
  * @param name name of the resource (without file extensions)
@@ -21,10 +19,10 @@ data class BinaryOutputArtifact(
          * @param file file to read the content from
          * @return a [BinaryOutputArtifact] with the file's name and content
          */
-        fun fromFile(file: File): BinaryOutputArtifact =
+        fun fromFile(name: String, bytes: ByteArray): BinaryOutputArtifact =
             BinaryOutputArtifact(
-                name = file.name,
-                content = file.readBytes().toList(),
+                name = name,
+                content = bytes.toList(),
                 type = ArtifactType.AUTO,
             )
     }

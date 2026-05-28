@@ -1,7 +1,11 @@
+@file:OptIn(ExperimentalUuidApi::class)
+// thank god kotlin has a drop-in replacement
+// tho keep in check for when it becomes legit and not experimental
 package org.example.project.qdcore.context.options
 
 import org.example.project.qdcore.media.storage.options.MediaStorageOptions
-import java.util.UUID
+import kotlin.uuid.ExperimentalUuidApi //!!
+import kotlin.uuid.Uuid
 
 private val DEFAULT_SUBDOCUMENT_URL_SUFFIXES = setOf(".qd", ".md")
 
@@ -14,9 +18,7 @@ data class MutableContextOptions(
     override var enableLocationAwareness: Boolean = true,
     override var subdocumentUrlSuffixes: Set<String> = DEFAULT_SUBDOCUMENT_URL_SUFFIXES,
     override var uuidSupplier: () -> String = {
-        UUID
-            .randomUUID()
-            .toString()
+        Uuid.random().toString()
     },
     override var enableRemoteMediaStorage: Boolean = false,
     override var enableLocalMediaStorage: Boolean = false,

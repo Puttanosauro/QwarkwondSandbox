@@ -15,7 +15,9 @@ class StrictPipelineErrorHandler : PipelineErrorHandler {
     ): Nothing {
         val errorCode = (error as? PipelineException)?.code ?: "Unknown - ${error::class.simpleName}"
         Log.error("An error occurred while in strict mode (error code $errorCode)")
-        sourceFunction?.let { Log.error("Originated from function: ${it.name}") }
+        if (sourceFunction != null) {
+            Log.error("Originated from function: ${sourceFunction.name}")
+        }
         throw error
     }
 }
