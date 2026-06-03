@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/hero.png" alt="QOLLAB Notebook Logo" width="600" />
+  <img src="assets/hero-white.png" alt="QOLLAB Notebook Logo" width="600" />
   <br/>
   <br/>
 
